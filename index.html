@@ -1,1 +1,285 @@
+<!background>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Background Image</title>
+</head>
+<body background="C:\users\mybook\Downloads\p3.jpg">
+</body>
+</html>
 
+<!timer>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer</title>
+<style>
+    .timer {
+        
+        font-size: 80px;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .controls {
+        font-style: Garamond;
+        text-align: center;
+        margin-top: 30px;
+    }
+</style>
+</head>
+<body>
+<h1 style="color: #5C5858;">Popdoro </h1>
+
+
+<audio id="timerAudio" src="C:\Users\MYBOOK\Downloads\tvari-tokyo-cafe-159065.mp3"></audio>
+
+<div class="timer" id="timer">00:00:00</div>
+
+<div class="controls">
+    <input type="number" id="hoursInput" placeholder="Hours">
+    <input type="number" id="minutesInput" placeholder="Minutes">
+    <input type="number" id="secondsInput" placeholder="Seconds">
+    <button id="startButton" onclick="startTimer()">Start</button>
+    <button id="pauseButton" onclick="pauseTimer()">Pause</button>
+    <button id="muteButton" onclick="stopAudio()">Mute</button>
+</div>
+
+<script>
+var timerInterval;
+var timerRunning = false;
+var timer = 0;
+
+function startTimer() {
+    if (!timerRunning) {
+        var hours = parseInt(document.getElementById("hoursInput").value) || 0;
+        var minutes = parseInt(document.getElementById("minutesInput").value) || 0;
+        var seconds = parseInt(document.getElementById("secondsInput").value) || 0;
+        timer = hours * 3600 + minutes * 60 + seconds;
+        if (timer > 0) {
+            updateTimerDisplay();
+            timerInterval = setInterval(function () {
+                if (timer > 0) {
+                    timer--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                    stopAudio();
+                   playBeepSound();
+                }
+            }, 1000);
+            timerRunning = true;
+            playAudio();
+        }
+    }
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    stopAudio();
+}
+
+function updateTimerDisplay() {
+    var hours = Math.floor(timer / 3600);
+    var minutes = Math.floor((timer % 3600) / 60);
+    var seconds = Math.floor(timer % 60);
+
+    var hoursStr = hours < 10 ? "0" + hours : hours;
+    var minutesStr = minutes < 10 ? "0" + minutes : minutes;
+    var secondsStr = seconds < 10 ? "0" + seconds : seconds;
+
+    document.getElementById("timer").textContent = hoursStr + ":" + minutesStr + ":" + secondsStr;
+}
+
+function playAudio() {
+    var audio = document.getElementById("timerAudio");
+    audio.play();
+}
+
+function stopAudio() {
+    var audio = document.getElementById("timerAudio");
+    audio.pause();
+    audio.currentTime = 0;
+}
+function playBeepSound() {
+    // Create an Audio object and set the source to a beep sound file
+    var beepSound = new Audio('beep.mp3');
+    
+    // Play the beep sound
+    beepSound.play();
+}
+</script>
+
+</body>
+</html>
+
+<!to do list>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editable Tasks</title>
+  <style>
+   
+    body {
+      font-family: Times new roman, Times new roman;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    input[type="text"] {
+      width: calc(100% - 120px);
+      padding: 10px;
+      margin-right: 30px;
+    }
+    
+    button {
+      padding: 8px 15px;
+      background-color: #34282C;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background-color: #4C4646;
+    }
+    
+    ul {
+       font-size: 25px;
+list-style-type: none;
+      padding: 0;
+    }
+    
+    li {
+      margin: 10px 0;
+    }
+    
+    li span {
+      cursor: pointer;
+    }
+    
+    li span:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <center>
+    <h1 style="color:#5C5858;">Pop-focus</h1>
+    </center>
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button id="addTaskBtn">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const taskInput = document.getElementById('taskInput');
+      const addTaskBtn = document.getElementById('addTaskBtn');
+      const taskList = document.getElementById('taskList');
+
+      addTaskBtn.addEventListener('click', function() {
+        const taskText = taskInput.value.trim();
+        if (taskText !== '') {
+          const listItem = document.createElement('li');
+          const span = document.createElement('span');
+          span.textContent = taskText;
+          listItem.appendChild(span);
+          taskList.appendChild(listItem);
+          taskInput.value = '';
+        }
+      });
+
+      taskList.addEventListener('click', function(event) {
+        if (event.target.tagName === 'SPAN') {
+          const editableSpan = document.createElement('input');
+          editableSpan.type = 'text';
+          editableSpan.value = event.target.textContent;
+          event.target.replaceWith(editableSpan);
+          editableSpan.focus();
+
+          editableSpan.addEventListener('blur', function() {
+            const newText = editableSpan.value.trim();
+            if (newText !== '') {
+              const newSpan = document.createElement('span');
+              newSpan.textContent = newText;
+              editableSpan.replaceWith(newSpan);
+            } else {
+              const originalText = editableSpan.dataset.originalText;
+              const originalSpan = document.createElement('span');
+              originalSpan.textContent = originalText;
+              editableSpan.replaceWith(originalSpan);
+            }
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+<!motivational quotes>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motivational Quotes</title>
+  <style>
+    /* Style the quote container */
+    #quote-container {
+      
+      font-family: courier, courier;
+      font-size: 20px;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #ccc;
+      margin: 10px auto;
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div id="quote-container">
+    <p id="quote-text">Loading...</p>
+  </div>
+
+  <script>
+    // Array of motivational quotes
+    const quotes = [
+      "The only way to achieve the impossible is to believe it is possible.",
+      "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+      "Believe you can and you're halfway there.",
+      "Success is walking from failure to failure with no loss of enthusiasm.",
+      "Your limitation—it's only your imagination.",
+      "The secret of getting ahead is getting started."
+    ];
+
+    // Function to display a random quote
+    function displayQuote() {
+      const quoteContainer = document.getElementById('quote-text');
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      quoteContainer.textContent = quotes[randomIndex];
+    }
+
+    // Initial display
+    displayQuote();
+
+    // Change quote every 2 minutes (120,000 milliseconds)
+    setInterval(displayQuote, 120000);
+  </script>
+</body>
+</html>
